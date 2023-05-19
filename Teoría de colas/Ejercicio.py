@@ -1,6 +1,7 @@
 import random
 import datetime as dt
 
+
 Q= P=PS =T= tci= tcf= tai= taf= caso = S=tdi= tdf= tti= ttf= header = 0
 
 SigFinServicio = dt.timedelta
@@ -13,7 +14,7 @@ HA=dt.timedelta
 def VectorInicial():
     global Q, PS, T, P, tci, tcf, tai, taf, caso, S, tdi, tdf, tti, ttf, header, SigFinServicio, SigLlegada, SigLlegadaS, SigSalidaS, HF, HA
 
-    P=int(input("Ingrese hora de iniciio de la simulación: "))
+    P=int(input("Ingrese hora de inicio de la simulación: "))
     HA= dt.timedelta(hours=int(P))
     Q = int(input("Ingrese la cantidad inicial de clientes en cola: "))
     PS = int(input("Ingrese el estado inicial del puesto de trabajo (ocupado = 1; libre = 0): "))
@@ -106,7 +107,7 @@ def Simulacion():
                 print ("Error")
                 break
             #tabla = [P, SigLlegada, SigFinServicio, Q, PS]
-            print(HA, SigLlegada, SigFinServicio, Q, PS) 
+            print(HA,"        ", SigLlegada, "                 ", SigFinServicio, "              ", Q,"  ", PS) 
             if HA >= HF:
                 print("-------------- Fin de la simulación -------------- ") 
                 break
@@ -126,7 +127,7 @@ def Simulacion():
                 print ("Error")
                 break
             #tabla = [P, SigLlegada, SigFinServicio, SigSalidaS, SigLlegadaS, Q, PS, S]
-            print(HA, SigLlegada, SigFinServicio, SigSalidaS, SigLlegadaS, Q, PS, S) 
+            print(HA,"        ", SigLlegada, "                 ", SigFinServicio, "              ", SigSalidaS, "                ", SigLlegadaS, "                   ", Q,"  ", PS, "  ", S) 
             if HA >= HF:
                 print("-------------- Fin de la simulación -------------- ") 
                 break
