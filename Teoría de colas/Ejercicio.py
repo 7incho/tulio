@@ -3,11 +3,15 @@ import random
 Q, PS, T, P, SigLlegada, SigFinServicio, SigLlegadaS, SigSalidaS, tci, tcf, tai, taf, caso, S, tdi, tdf, tti, ttf, header = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 
 def VectorInicial():
-    global Q, PS, T, P, tci, tcf, tai, taf, caso, S, tdi, tdf, tti, ttf, header
+    global Q, PS, T, P, tci, tcf, tai, taf, caso, S, tdi, tdf, tti, ttf, header, SigFinServicio, SigLlegada, SigLlegadaS, SigSalidaS
 
     Q = int(input("Ingrese la cantidad inicial de clientes en cola: "))
     PS = int(input("Ingrese el estado inicial del puesto de trabajo (ocupado = 1; libre = 0): "))
     T = int(input("Ingrese la duración de la simulación (en minutos): "))
+    SigFinServicio = T
+    SigLlegada = T
+    SigLlegadaS = T
+    SigSalidaS = T
     P = 0
     
     print("Ingrese el intervalo en el que llegan los clientes: ") 
@@ -34,16 +38,16 @@ def VectorInicial():
         header = ["Hora actual", "H.Prox llegada cliente", "H.Prox fin servicio", "Q", "PS"]
 
 def LlegadaCliente():
-    global Q, PS, P, SigFinServicio
+    global Q, PS, P, SigFinServicio, SigLlegada
     if PS == 0 and S == 1:
         PS = 1
         SigFinServicio = P + random.randint(tai, taf)
     else:
         Q = Q + 1
-    SigLlegada = SigLlegada + random.randint(tci, tcf)
+    SigLlegada = P + random.randint(tci, tcf)
 
 def FinServicio():
-    global Q, PS, SigFinServicio
+    global Q, PS, SigFinServicio #Controlar la desocupación del puesto de servicio, avanzada la simulación no se desocupa
     if Q >= 1:
         Q = Q - 1
         SigFinServicio = P + random.randint(tai, taf)
@@ -67,16 +71,15 @@ def Simulacion():
     global P, PS, T, Q, SigFinServicio, SigLlegada
     print("-------------- Inicio de Simulación --------------")
     print(header)
-    tabla = [P, SigLlegada, SigFinServicio, Q, PS] 
-    LlegadaCliente
+    LlegadaCliente()
     while True:
-        print(tabla)
         P = min(SigFinServicio, SigLlegada)
-        
+        tabla = [P, SigLlegada, SigFinServicio, Q, PS]
+        print(tabla) #Revisar la impresión, no se actualiza el valor en la tabla
         if min(SigFinServicio, SigLlegada) == SigFinServicio:
-            FinServicio
+            FinServicio()
         elif min(SigFinServicio, SigLlegada) == SigLlegada:
-            LlegadaCliente
+            LlegadaCliente()
         if P >= T:
             print("-------------- Fin de la simulación -------------- ") 
             break           
