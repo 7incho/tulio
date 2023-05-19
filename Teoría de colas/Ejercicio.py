@@ -47,12 +47,14 @@ def LlegadaCliente():
     SigLlegada = P + random.randint(tci, tcf)
 
 def FinServicio():
-    global Q, PS, SigFinServicio #Controlar la desocupación del puesto de servicio, avanzada la simulación no se desocupa
+    global Q, PS, SigFinServicio
     if Q >= 1:
         Q = Q - 1
         SigFinServicio = P + random.randint(tai, taf)
     else:
         PS = 0
+        SigFinServicio = T
+        
 
 def SalidaServidor():
     global S, SigLlegadaS, SigFinServicio
@@ -74,12 +76,14 @@ def Simulacion():
     LlegadaCliente()
     while True:
         P = min(SigFinServicio, SigLlegada)
-        tabla = [P, SigLlegada, SigFinServicio, Q, PS]
-        print(tabla) #Revisar la impresión, no se actualiza el valor en la tabla
         if min(SigFinServicio, SigLlegada) == SigFinServicio:
             FinServicio()
         elif min(SigFinServicio, SigLlegada) == SigLlegada:
             LlegadaCliente()
+        elif SigFinServicio == SigLlegada:
+            print ("Ayuda")
+        tabla = [P, SigLlegada, SigFinServicio, Q, PS]
+        print(tabla) 
         if P >= T:
             print("-------------- Fin de la simulación -------------- ") 
             break           
