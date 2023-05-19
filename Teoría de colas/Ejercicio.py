@@ -32,17 +32,19 @@ def VectorInicial():
     return
 
 def LlegadaCliente():
+    a = random.randint(tci, tcf)
     if PS == 0:
         PS==1
-        SigFinServicio = random.randint(tci, tcf)
+        SigFinServicio = P + a
     else:
         Q=Q+1
     return
 
 def FinServicio():
+    a = random.randint(tai, taf)
     if Q >= 1:
         Q=Q-1
-        SigFinServicio = random.randint(tai, taf)
+        SigFinServicio = P + a
     else:
         PS=0
     return
@@ -61,4 +63,24 @@ def LlegadaServidor():
     SigSalidaServidor = P + a
     return
 
+def ImprimirVector():
+    print("Clientes en cola: {Q}")
+    print("Puesto de servicio: {PS}")
+    print("Duración de la simulación {T}")
+    print("Tiempo actual: {P}")
+    print("Clientes en cola: {Q}")
+    print("Clientes en cola: {Q}")
+    print("Intervalo de atención: {tai}, {taf}")
+    print("Intervalo de llegada: {tci}, {tcf}")
+    print("Abandona el servidor?: {caso}")
+    print("Intervalo de trabajo: {tti}, {ttf}")
+    print("Intervalo de descanso: {tdi}, {tdf}")
+    
+def ImprimirEventos():
+    print("Siguiente llegada de cliente: {SigLlegada}")
+    print("Siguiente Fin de servicio: {SigFinServicio}")
+    print("Siguiente salida del servidor: {SigSalidaS}")
+    print("Siguiente llegada del servidor: {SigLlegadaS}")
+
 VectorInicial()
+ImprimirVector
