@@ -57,36 +57,62 @@ def FinServicio():
         
 
 def SalidaServidor():
-    global S, SigLlegadaS, SigFinServicio
+    global S, SigLlegadaS, SigFinServicio, SigSalidaS
     a = random.randint(tdi, tdf)
     S = 0
     SigLlegadaS = P + a
     if PS == 1:
         SigFinServicio = SigFinServicio + a
+    if SigFinServicio == SigSalidaS:
+        FinServicio()
+    SigSalidaS = T
 
 def LlegadaServidor():
-    global S, SigSalidaS
+    global S, SigSalidaS, SigLlegadaS
     S = 1
     SigSalidaS = P + random.randint(tti, ttf)
+    SigLlegadaS = T
     
 def Simulacion():
     global P, PS, T, Q, SigFinServicio, SigLlegada
     print("-------------- Inicio de Simulación --------------")
     print(header)
     LlegadaCliente()
-    while True:
-        P = min(SigFinServicio, SigLlegada)
-        if min(SigFinServicio, SigLlegada) == SigFinServicio:
-            FinServicio()
-        elif min(SigFinServicio, SigLlegada) == SigLlegada:
-            LlegadaCliente()
-        elif SigFinServicio == SigLlegada:
-            print ("Ayuda")
-        tabla = [P, SigLlegada, SigFinServicio, Q, PS]
-        print(tabla) 
-        if P >= T:
-            print("-------------- Fin de la simulación -------------- ") 
-            break           
+    if caso == 0:
+        while True:
+            P = min(SigFinServicio, SigLlegada)
+            if min(SigFinServicio, SigLlegada) == SigFinServicio:
+                FinServicio()
+            elif min(SigFinServicio, SigLlegada) == SigLlegada:
+                LlegadaCliente()
+            elif SigFinServicio == SigLlegada:
+                print ("Error")
+                break
+            tabla = [P, SigLlegada, SigFinServicio, Q, PS]
+            print(tabla) 
+            if P >= T:
+                print("-------------- Fin de la simulación -------------- ") 
+                break
+    elif caso == 1:
+        LlegadaServidor()
+        while True:
+            P = min(SigFinServicio, SigLlegada, SigLlegadaS, SigSalidaS)
+            if min(SigFinServicio, SigLlegada, SigLlegadaS, SigSalidaS) == SigFinServicio:
+                FinServicio()
+            elif min(SigFinServicio, SigLlegada, SigLlegadaS, SigSalidaS) == SigLlegada:
+                LlegadaCliente()
+            elif min(SigFinServicio, SigLlegada, SigLlegadaS, SigSalidaS) == SigLlegadaS:
+                LlegadaServidor()
+            elif min(SigFinServicio, SigLlegada, SigLlegadaS, SigSalidaS) == SigSalidaS:
+                SalidaServidor()
+            elif SigFinServicio == SigLlegada == SigLlegadaS == SigSalidaS:
+                print ("Error")
+                break
+            tabla = [P, SigLlegada, SigFinServicio, SigSalidaS, SigLlegadaS, Q, PS, S]
+            print(tabla) 
+            if P >= T:
+                print("-------------- Fin de la simulación -------------- ") 
+                break
     return
 
 def ImprimirVector():
