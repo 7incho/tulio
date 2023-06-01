@@ -1,8 +1,7 @@
 import random
 import datetime as dt
 
-
-Q= P=PS =T= tci= tcf= tai= taf= caso = S=tdi= tdf= tti= ttf= header = 0
+Q= P=PS =T= tci= tcf= tai= taf= casoServidor= casoCliente= S= tdi= tdf= tti= ttf= header= vAbandono= tAbandonoi= tAbandonof= 0
 
 SigFinServicio = dt.timedelta
 SigLlegada = dt.timedelta
@@ -10,9 +9,10 @@ SigLlegadaS = dt.timedelta
 SigSalidaS= dt.timedelta
 HF=dt.timedelta
 HA=dt.timedelta
+vAbandono = dt.timedelta
 
 def VectorInicial():
-    global Q, PS, T, P, tci, tcf, tai, taf, caso, S, tdi, tdf, tti, ttf, header, SigFinServicio, SigLlegada, SigLlegadaS, SigSalidaS, HF, HA
+    global Q, PS, T, P, tci, tcf, tai, taf, casoServidor, casoCliente, S, tdi, tdf, tti, ttf, header, SigFinServicio, SigLlegada, SigLlegadaS, SigSalidaS, HF, HA, tAbandonoi, tAbandonof
 
     P=int(input("Ingrese hora de inicio de la simulación: "))
     HA= dt.timedelta(hours=int(P))
@@ -33,9 +33,9 @@ def VectorInicial():
     tai = int(input("Mínimo: "))
     taf = int(input("Máximo: "))
     
-    caso = int(input("¿El servidor puede abandonar el puesto de trabajo? (Si = 1; No = 0): "))
+    casoServidor = int(input("¿El servidor puede abandonar el puesto de trabajo? (Si = 1; No = 0): "))
     
-    if caso == 1:
+    if casoServidor == 1:
         S = int(input("Ingrese el valor inicial del servidor del puesto de trabajo (presente = 1; ausente = 0): "))
         print("Ingrese el intervalo de duración de los descansos: ")
         tdi = int(input("Mínimo: "))
@@ -43,22 +43,44 @@ def VectorInicial():
         print("Ingrese el intervalo de tiempo en el que trabaja el servidor: ")
         tti = int(input("Mínimo: "))
         ttf = int(input("Máximo: "))
-        header = ["Hora actual", "H.Prox llegada cliente", "H.Prox fin servicio", "H.Prox Salida servidor", "H.Prox Llegada servidor", "Q", "PS", "S"]
+        #header = ["Hora actual", "H.Prox llegada cliente", "H.Prox fin servicio", "H.Prox Salida servidor", "H.Prox Llegada servidor", "Q", "PS", "S"]
     else:
         S = 1
-        header = ["Hora actual", "H.Prox llegada cliente", "H.Prox fin servicio", "Q", "PS"]
-
+        #header = ["Hora actual", "H.Prox llegada cliente", "H.Prox fin servicio", "Q", "PS"]
+        
+    casoCliente = int(input("¿El cliente puede abandonar la cola de espera? (Si = 1; No = 0): "))
+    
+    if casoCliente == 1:
+        print("Ingrese el intervalo de los abandonos: ")
+        tAbandonoi = int(input("Mínimo: "))
+        tAbandonof = int(input("Máximo: "))
+    
+    #Definimos el header para cada caso
+    if casoCliente == 1 and casoServidor == 1:
+        header = ["Hora actual", "H.Prox llegada cliente", "H.Prox fin servicio", "H.Prox Salida servidor", "H.Prox Llegada servidor", "H. Prox Abandono", "Q", "PS", "S"]
+    elif casoCliente == 1 and casoServidor == 0:
+        header = ["Hora actual", "H.Prox llegada cliente", "H.Prox fin servicio", "H. Prox Abandono", "Q", "PS", "S"]
+    elif casoCliente == 0 and casoServidor == 1:
+        header = ["Hora actual", "H.Prox llegada cliente", "H.Prox fin servicio", "H.Prox Salida servidor", "H.Prox Llegada servidor", "Q", "PS", "S"]
+    elif casoCliente == 0 and casoServidor == 0:
+        header = ["Hora actual", "H.Prox llegada cliente", "H.Prox fin servicio", "Q", "PS", "S"]
+        
 def LlegadaCliente():
     a=random.randint(tai, taf)
     b=random.randint(tci, tcf)
-    global Q, PS, HA, SigFinServicio, SigLlegada
+    
+    global Q, PS, HA, SigFinServicio, SigLlegada, casoCliente, vAbandono
     if PS == 0 and S == 1:
         PS = 1
         SigFinServicio = HA + dt.timedelta(minutes=a)
         #print(SigFinServicio)
     else:
         Q = Q + 1
+        if casoCliente == 1:
+            c=random.randint(tAbandonoi, tAbandonof)
+            vAbandono.append(HA+dt.timedelta(minutes=c))
     SigLlegada = HA + dt.timedelta(minutes=b)
+    
     #print(SigLlegada)
 
 def FinServicio():
@@ -66,12 +88,13 @@ def FinServicio():
     global Q, PS, SigFinServicio
     if Q >= 1:
         Q = Q - 1
+        if casoCliente == 1:
+            del vAbandono[0]
         SigFinServicio = HA + dt.timedelta(minutes=a)
         #print(SigFinServicio)
     else:
         PS = 0
-        SigFinServicio = HF
-        
+        SigFinServicio = HF     
 
 def SalidaServidor():
     global S, SigLlegadaS, SigFinServicio, SigSalidaS
@@ -91,12 +114,16 @@ def LlegadaServidor():
     SigSalidaS = HA + dt.timedelta(minutes=a)
     SigLlegadaS = HF
     
+def AbandonoCliente():
+    global Q
+    Q = Q-1
+    
 def Simulacion():
-    global HA, PS, T, Q, SigFinServicio, SigLlegada
+    global HA, PS, T, Q, SigFinServicio, SigLlegada, vAbandono
     print("-------------- Inicio de Simulación --------------")
     print(header)
     LlegadaCliente()
-    if caso == 0:
+    if casoCliente == 0 and casoServidor == 0:
         while True:
             HA = min(SigFinServicio, SigLlegada)
             if min(SigFinServicio, SigLlegada) == SigFinServicio:
@@ -111,7 +138,7 @@ def Simulacion():
             if HA >= HF:
                 print("-------------- Fin de la simulación -------------- ") 
                 break
-    elif caso == 1:
+    elif casoCliente == 0 and casoServidor == 1:
         LlegadaServidor()
         while True:
             HA = min(SigFinServicio, SigLlegada, SigLlegadaS, SigSalidaS)
@@ -131,6 +158,45 @@ def Simulacion():
             if HA >= HF:
                 print("-------------- Fin de la simulación -------------- ") 
                 break
+    elif casoCliente == 1 and casoServidor == 0:
+        while True:
+            HA = min(SigFinServicio, SigLlegada, vAbandono[0])
+            if min(SigFinServicio, SigLlegada, vAbandono[0]) == SigFinServicio:
+                FinServicio()
+            elif min(SigFinServicio, SigLlegada, vAbandono[0]) == SigLlegada:
+                LlegadaCliente()
+            elif min(SigFinServicio, SigLlegada, vAbandono[0]) == vAbandono[0]:
+                AbandonoCliente()
+            elif SigFinServicio == SigLlegada == vAbandono[0]:
+                print ("Error")
+                break
+            #tabla = [P, SigLlegada, SigFinServicio, Q, PS]
+            print(HA,"        ", SigLlegada, "                 ", SigFinServicio, "              ",vAbandono," ", Q,"  ", PS) 
+            if HA >= HF:
+                print("-------------- Fin de la simulación -------------- ") 
+                break
+    elif casoCliente == 1 and casoServidor == 1:
+        LlegadaServidor()
+        while True:
+            HA = min(SigFinServicio, SigLlegada, SigLlegadaS, SigSalidaS, vAbandono[0])
+            if min(SigFinServicio, SigLlegada, SigLlegadaS, SigSalidaS, vAbandono[0]) == SigFinServicio:
+                FinServicio()
+            elif min(SigFinServicio, SigLlegada, SigLlegadaS, SigSalidaS, vAbandono[0]) == SigLlegada:
+                LlegadaCliente()
+            elif min(SigFinServicio, SigLlegada, SigLlegadaS, SigSalidaS, vAbandono[0]) == SigLlegadaS:
+                LlegadaServidor()
+            elif min(SigFinServicio, SigLlegada, SigLlegadaS, SigSalidaS, vAbandono[0]) == SigSalidaS:
+                SalidaServidor()
+            elif min(SigFinServicio, SigLlegada, SigLlegadaS, SigSalidaS, vAbandono[0]) == vAbandono[0]:
+                AbandonoCliente()
+            elif SigFinServicio == SigLlegada == SigLlegadaS == SigSalidaS == vAbandono[0]:
+                print ("Error")
+                break
+            #tabla = [P, SigLlegada, SigFinServicio, SigSalidaS, SigLlegadaS, Q, PS, S]
+            print(HA,"        ", SigLlegada, "                 ", SigFinServicio, "              ", SigSalidaS, "                ", SigLlegadaS, "                   ", vAbandono[0], " ", Q,"  ", PS, "  ", S) 
+            if HA >= HF:
+                print("-------------- Fin de la simulación -------------- ") 
+                break
     return
 
 def ImprimirVector():
@@ -140,7 +206,7 @@ def ImprimirVector():
     print("Tiempo actual:", P)
     print("Intervalo de atención:", tai, "-", taf)
     print("Intervalo de llegada:", tci, "-", tcf)
-    print("Abandona el servidor?:", caso)
+    print("Abandona el servidor?:", casoServidor)
     print("Intervalo de trabajo:", tti, "-", ttf)
     print("Intervalo de descanso:", tdi, "-", tdf)
     
