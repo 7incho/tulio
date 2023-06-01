@@ -1,15 +1,17 @@
 import random
 import datetime as dt
 
-Q= P=PS =T= tci= tcf= tai= taf= casoServidor= casoCliente= S= tdi= tdf= tti= ttf= header= vAbandono= tAbandonoi= tAbandonof= 0
+Q= P=PS =T= tci= tcf= tai= taf= casoServidor= casoCliente= S= tdi= tdf= tti= ttf= header= aux= tAbandonoi= tAbandonof= 0
 
 SigFinServicio = dt.timedelta
 SigLlegada = dt.timedelta
 SigLlegadaS = dt.timedelta
-SigSalidaS= dt.timedelta
-HF=dt.timedelta
-HA=dt.timedelta
-vAbandono = dt.timedelta
+SigSalidaS = dt.timedelta
+HF = dt.timedelta
+HA = dt.timedelta
+
+#guarda ta ak no anda, 1er aviso
+vAbandono = [float(0)]
 
 def VectorInicial():
     global Q, PS, T, P, tci, tcf, tai, taf, casoServidor, casoCliente, S, tdi, tdf, tti, ttf, header, SigFinServicio, SigLlegada, SigLlegadaS, SigSalidaS, HF, HA, tAbandonoi, tAbandonof
@@ -43,10 +45,8 @@ def VectorInicial():
         print("Ingrese el intervalo de tiempo en el que trabaja el servidor: ")
         tti = int(input("Mínimo: "))
         ttf = int(input("Máximo: "))
-        #header = ["Hora actual", "H.Prox llegada cliente", "H.Prox fin servicio", "H.Prox Salida servidor", "H.Prox Llegada servidor", "Q", "PS", "S"]
     else:
         S = 1
-        #header = ["Hora actual", "H.Prox llegada cliente", "H.Prox fin servicio", "Q", "PS"]
         
     casoCliente = int(input("¿El cliente puede abandonar la cola de espera? (Si = 1; No = 0): "))
     
@@ -69,7 +69,7 @@ def LlegadaCliente():
     a=random.randint(tai, taf)
     b=random.randint(tci, tcf)
     
-    global Q, PS, HA, SigFinServicio, SigLlegada, casoCliente, vAbandono
+    global Q, PS, HA, SigFinServicio, SigLlegada, casoCliente, vAbandono, aux
     if PS == 0 and S == 1:
         PS = 1
         SigFinServicio = HA + dt.timedelta(minutes=a)
@@ -78,7 +78,8 @@ def LlegadaCliente():
         Q = Q + 1
         if casoCliente == 1:
             c=random.randint(tAbandonoi, tAbandonof)
-            vAbandono.append(HA+dt.timedelta(minutes=c))
+            aux = HA + dt.timedelta(minutes=c)
+            vAbandono.append(dt.timestamp(aux))
     SigLlegada = HA + dt.timedelta(minutes=b)
     
     #print(SigLlegada)
@@ -117,9 +118,15 @@ def LlegadaServidor():
 def AbandonoCliente():
     global Q
     Q = Q-1
+    print("Chupala no espero más")
     
 def Simulacion():
     global HA, PS, T, Q, SigFinServicio, SigLlegada, vAbandono
+    
+    print (vAbandono[0])
+    del vAbandono[0]
+    #print (vAbandono[0])
+    
     print("-------------- Inicio de Simulación --------------")
     print(header)
     LlegadaCliente()
@@ -160,14 +167,14 @@ def Simulacion():
                 break
     elif casoCliente == 1 and casoServidor == 0:
         while True:
-            HA = min(SigFinServicio, SigLlegada, vAbandono[0])
-            if min(SigFinServicio, SigLlegada, vAbandono[0]) == SigFinServicio:
+            HA = min(SigFinServicio, SigLlegada, dt.fromtimestamp(vAbandono[0]))
+            if min(SigFinServicio, SigLlegada, dt.fromtimestamp(vAbandono[0])) == SigFinServicio:
                 FinServicio()
-            elif min(SigFinServicio, SigLlegada, vAbandono[0]) == SigLlegada:
+            elif min(SigFinServicio, SigLlegada, dt.fromtimestamp(vAbandono[0])) == SigLlegada:
                 LlegadaCliente()
-            elif min(SigFinServicio, SigLlegada, vAbandono[0]) == vAbandono[0]:
+            elif min(SigFinServicio, SigLlegada, dt.fromtimestamp(vAbandono[0])) == dt.fromtimestamp(vAbandono[0]):
                 AbandonoCliente()
-            elif SigFinServicio == SigLlegada == vAbandono[0]:
+            elif SigFinServicio == SigLlegada == dt.fromtimestamp(vAbandono[0]):
                 print ("Error")
                 break
             #tabla = [P, SigLlegada, SigFinServicio, Q, PS]
