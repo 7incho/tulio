@@ -1,53 +1,13 @@
-#from datetime import timedelta, datetime, tzinfo, timezone, time
-import datetime as dt
+import datetime
 
-def fib(n):
-    a,b = 0,1
-    while a<n:
-        print(a, end=' - ')
+fecha_inicial = datetime.datetime(2023, 6, 1, 12, 30, 0)  # Fecha y hora inicial
+duracion = datetime.timedelta(days=1, hours=3)  # Duración de 1 día y 3 horas
 
+fecha_final = fecha_inicial + duracion  # Sumar el timedelta a la fecha inicial
 
+print(fecha_final)  # Imprimir la fecha y hora final
 
-        a,b = b, a+b
-
-#fib(1000)
-    
-#Suponiendo que S=cte 1
-ps = 0
-q = 0
-horaActual = dt.timedelta(hours=8)
-deltaLLegadas = 45
-deltaFS = 40
-horaProximoFinServicio = 0 
-
-def llegadas():
-    global ps, q, horaActual, horaProximaLlegada, deltaLLegadas
-   
-    if ps==0:
-        ps=1
-    else:
-        q+=1
-    #generar horario de proxima llegada
-    horaProximaLlegada = horaActual + dt.timedelta(seconds=deltaLLegadas)
-    
-        
-    print('ps: ',ps, ' q:',q, 'Hora Actual: ', horaActual, 'Proxima llegada: ', horaProximaLlegada)
-    
-
-
-#termina de atender a un cliente
-def finservicio():
-  global ps, q, deltaFS, horaActual, horaProximoFinServicio, deltaFS
-  if q>0:
-    ps=1    #esta linea es opcional (por que si es un fin de servicio entonces ps==1)
-    q=q-1
-    #calcular proximo fin de servicio
-    horaProximoFinServicio = horaActual + dt.timedelta(seconds=deltaFS)
-  else:  
-    ps=0
-  print('ps: ', ps, ' q:', q, 'Hora Actual: ', horaActual, 'Proxima llegada: ', horaProximaLlegada, 'Hora prox. fin servicio: ', horaProximoFinServicio)
-  
-
-llegadas()
-llegadas()
-finservicio()
+timestamp = fecha_final.timestamp()
+print (timestamp)
+hora = datetime.datetime.fromtimestamp(timestamp)
+print (hora)
