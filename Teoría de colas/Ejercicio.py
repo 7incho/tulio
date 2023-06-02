@@ -127,8 +127,8 @@ def Simulacion():
     print("-------------- Inicio de Simulación --------------")
     print(header)
     LlegadaCliente()
-    print("Hora final: ", horaMin(HF))
-    print("Hora inicial: ", horaMin(HA))
+    # print("Hora final: ", horaMin(HF))
+    # print("Hora inicial: ", horaMin(HA))
     if casoCliente == 0 and casoServidor == 0:
         while True:
             HA = min(SigFinServicio, SigLlegada)
@@ -199,7 +199,7 @@ def Simulacion():
                 print ("Error")
                 break
             #"Hora actual", "H.Prox llegada cliente", "H.Prox fin servicio", "H.Prox Salida servidor", "H.Prox Llegada servidor", "H. Prox Abandono", "Q", "PS", "S"
-            print(HA,"        ", SigLlegada, "                 ", SigFinServicio, "              ", SigSalidaS, "                ", SigLlegadaS, "                   ", vAbandono[0], " ", Q,"  ", PS, "  ", S) 
+            print(HA.hour,":", HA.minute,"        ", SigLlegada.hour, ":", SigLlegada.minute, "                 ", SigFinServicio.hour, ":", SigFinServicio.minute, "              ",vAbandono[0].hour, ":", vAbandono[0].minute,"              ", SigSalidaS.hour,":",SigSalidaS.minute,"                ", SigLlegadaS.hour,":", SigLlegadaS.minute,"                   ", Q,"  ", PS, "  ", S) 
             if HA >= HF:
                 print("-------------- Fin de la simulación -------------- ") 
                 break
