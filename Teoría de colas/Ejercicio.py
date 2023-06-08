@@ -1,7 +1,7 @@
 import random
 import datetime as dt
 
-QGral= QPrio= PS= ZN= T= caso= S= 0
+QGral= QPrio= PS= ZN= tZN= T= caso= S= 0
 #tLlegadaGrali= tLlegadaGralf= tAtencioni= tAtencionf= tDescansoi= tDescansof= tTrabajoi= tTrabajof= tAbandonoGrali= tAbandonoGralf= 0
 tLlegadaGral= tLlegadaPrio= tAtencion= tDescanso= tTrabajo= tAbandonoGral= tAbandonoPrio= [0,0]
 horaActual= horaFinal= SigFinServicio= SigLlegadaGral= SigLlegadaPrio= SigLlegadaServ= SigSalidaServ= dt.datetime(2000,1,1,0,0,0)
@@ -9,7 +9,7 @@ horaActual= horaFinal= SigFinServicio= SigLlegadaGral= SigLlegadaPrio= SigLlegad
 vAbandonoGral= vAbandonoPrio= [horaFinal]
 
 def VectorInicial():
-    global QGral, QPrio, PS, ZN, T, caso, S, tLlegadaGral, tLlegadaPrio, tAtencion, tDescanso, tTrabajo, tAbandonoGral, tAbandonoPrio, horaActual, horaFinal, SigFinServicio, SigLlegadaGral, SigLlegadaPrio, SigLlegadaServ, SigSalidaServ, vAbandonoGral, vAbandonoPrio
+    global QGral, QPrio, PS, ZN, tZN, T, caso, S, tLlegadaGral, tLlegadaPrio, tAtencion, tDescanso, tTrabajo, tAbandonoGral, tAbandonoPrio, horaActual, horaFinal, SigFinServicio, SigLlegadaGral, SigLlegadaPrio, SigLlegadaServ, SigSalidaServ, vAbandonoGral, vAbandonoPrio
     
     aux = dt.timedelta(hours=int(input("Ingrese hora de inicio de la simulación: ")))
     horaActual = horaActual + aux
@@ -50,7 +50,7 @@ def VectorInicial():
                 tTrabajo[1] = int(input("Máximo: "))
                 
                 if int(input("¿Existe una zona segura en el modelo? (Si = 1; No = 0): ")) == 1:
-                    ZN = int(input("Ingrese el tiempo en minutos que demora un cliente en pasar por la zona de seguridad: "))
+                    tZN = int(input("Ingrese el tiempo en minutos que demora un cliente en pasar por la zona de seguridad: "))
                     caso = 0
                 else:
                     caso = 1
@@ -58,7 +58,7 @@ def VectorInicial():
                 S = 1
                 
                 if int(input("¿Existe una zona segura en el modelo? (Si = 1; No = 0): ")) == 1:
-                    ZN = int(input("Ingrese el tiempo en minutos que demora un cliente en pasar por la zona de seguridad: "))
+                    tZN = int(input("Ingrese el tiempo en minutos que demora un cliente en pasar por la zona de seguridad: "))
                     caso = 2
                 else:
                     caso = 3
@@ -73,7 +73,7 @@ def VectorInicial():
                 tTrabajo[1] = int(input("Máximo: "))
                 
                 if int(input("¿Existe una zona segura en el modelo? (Si = 1; No = 0): ")) == 1:
-                    ZN = int(input("Ingrese el tiempo en minutos que demora un cliente en pasar por la zona de seguridad: "))
+                    tZN = int(input("Ingrese el tiempo en minutos que demora un cliente en pasar por la zona de seguridad: "))
                     caso = 4
                 else:
                     caso = 5
@@ -81,7 +81,7 @@ def VectorInicial():
                 S = 1
                 
                 if int(input("¿Existe una zona segura en el modelo? (Si = 1; No = 0): ")) == 1:
-                    ZN = int(input("Ingrese el tiempo en minutos que demora un cliente en pasar por la zona de seguridad: "))
+                    tZN = int(input("Ingrese el tiempo en minutos que demora un cliente en pasar por la zona de seguridad: "))
                     caso = 6
                 else:
                     caso = 7
@@ -106,7 +106,7 @@ def VectorInicial():
                 tTrabajo[1] = int(input("Máximo: "))
                 
                 if int(input("¿Existe una zona segura en el modelo? (Si = 1; No = 0): ")) == 1:
-                    ZN = int(input("Ingrese el tiempo en minutos que demora un cliente en pasar por la zona de seguridad: "))
+                    tZN = int(input("Ingrese el tiempo en minutos que demora un cliente en pasar por la zona de seguridad: "))
                     caso = 8
                 else:
                     caso = 9
@@ -114,7 +114,7 @@ def VectorInicial():
                 S = 1
                 
                 if int(input("¿Existe una zona segura en el modelo? (Si = 1; No = 0): ")) == 1:
-                    ZN = int(input("Ingrese el tiempo en minutos que demora un cliente en pasar por la zona de seguridad: "))
+                    tZN = int(input("Ingrese el tiempo en minutos que demora un cliente en pasar por la zona de seguridad: "))
                     caso = 10
                 else:
                     caso = 11
@@ -130,7 +130,7 @@ def VectorInicial():
                 tTrabajo[1] = int(input("Máximo: "))
                 
                 if int(input("¿Existe una zona segura en el modelo? (Si = 1; No = 0): ")) == 1:
-                    ZN = int(input("Ingrese el tiempo en minutos que demora un cliente en pasar por la zona de seguridad: "))
+                    tZN = int(input("Ingrese el tiempo en minutos que demora un cliente en pasar por la zona de seguridad: "))
                     caso = 12
                 else:
                     caso = 13
@@ -138,29 +138,44 @@ def VectorInicial():
                 S = 1
                 
                 if int(input("¿Existe una zona segura en el modelo? (Si = 1; No = 0): ")) == 1:
-                    ZN = int(input("Ingrese el tiempo en minutos que demora un cliente en pasar por la zona de seguridad: "))
+                    tZN = int(input("Ingrese el tiempo en minutos que demora un cliente en pasar por la zona de seguridad: "))
                     caso = 14
                 else:
                     caso = 15
-        
-def LlegadaCliente():
+
+def LlegadaCliente(case):
     a=random.randint(tAtencion[0], tAtencion[1])
     b=random.randint(tLlegadaGral[0], tLlegadaGral[1])
-    global QGral, PS, horaActual, SigFinServicio, SigLlegadaGral, casoCliente, vAbandonoGral
+    global QGral, QPrio, PS, horaActual, SigFinServicio, SigLlegadaGral, caso, vAbandonoGral
     
-    if PS == 0 and S == 1:
-        PS = 1
-        SigFinServicio = horaActual + dt.timedelta(minutes=a)
-        if casoCliente == 1:
-            vAbandonoGral[0] = horaFinal
-    else:
-        QGral = QGral + 1
-        if casoCliente == 1:
-            c = random.randint(tAbandonoGral[0], tAbandonoGral[1])
-            if vAbandonoGral[0] == horaFinal:
-                vAbandonoGral[0] = horaActual + dt.timedelta(minutes=c)
-            else:
-                vAbandonoGral.append(horaActual + dt.timedelta(minutes=c))
+    if case == "Gral":
+        if PS == 0 and S == 1:
+            PS = 1
+            SigFinServicio = horaActual + dt.timedelta(minutes=a)
+            if casoCliente == 1:
+                vAbandonoGral[0] = horaFinal
+        else:
+            QGral = QGral + 1
+            if casoCliente == 1:
+                c = random.randint(tAbandonoGral[0], tAbandonoGral[1])
+                if vAbandonoGral[0] == horaFinal:
+                    vAbandonoGral[0] = horaActual + dt.timedelta(minutes=c)
+                else:
+                    vAbandonoGral.append(horaActual + dt.timedelta(minutes=c))
+    elif case == "Prio":
+        if PS == 0 and S == 1:
+            PS = 1
+            SigFinServicio = horaActual + dt.timedelta(minutes=a)
+            if casoCliente == 1:
+                vAbandonoGral[0] = horaFinal
+        else:
+            QGral = QGral + 1
+            if casoCliente == 1:
+                c = random.randint(tAbandonoGral[0], tAbandonoGral[1])
+                if vAbandonoGral[0] == horaFinal:
+                    vAbandonoGral[0] = horaActual + dt.timedelta(minutes=c)
+                else:
+                    vAbandonoGral.append(horaActual + dt.timedelta(minutes=c))
     SigLlegadaGral = horaActual + dt.timedelta(minutes=b)
 
 def FinServicio():
