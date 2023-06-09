@@ -68,12 +68,12 @@ def VectorInicial():
         tLlegadaGrali = int(input("Mínimo: "))
         tLlegadaGralf = int(input("Máximo: "))
         S = 1
-        tZS= int(input("Ingrese el tiempo que demora el cliente en pasar por la zona de seguridad:"))
+        tZS= int(input("Ingrese el tiempo que demora el cliente en pasar por la zona de seguridad: "))
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
         
 def LlegadaCliente(case):
     a=random.randint(tAtencióni, tAtenciónf)
-    global QGral, QPrio,  PS, horaActual, SigFinServicio, SigLlegadaGral, SigLlegadaPrio, caso, vAbandono, SigFinZona
+    global QGral, QPrio,  PS, horaActual, SigFinServicio, SigLlegadaGral, SigLlegadaPrio, caso, vAbandono, SigFinZona, ZS
     
     if caso == 1:
         b=random.randint(tLlegadaGrali, tLlegadaGralf)
@@ -132,15 +132,16 @@ def LlegadaCliente(case):
         SigLlegadaGral = horaActual + dt.timedelta(minutes=b)
 
 def FinZona():
-    global PS, ZS, SigFinServicio, tAtencióni, tAtenciónf
+    global PS, ZS, SigFinServicio, tAtencióni, tAtenciónf, SigFinZona
     a=random.randint(tAtencióni, tAtenciónf)
     PS = 1
     ZS = 0
     SigFinServicio = horaActual + dt.timedelta(minutes=a)
+    SigFinZona=horaFinal #sin esto se va al carajo
 
 def FinServicio():
     a=random.randint(tAtencióni, tAtenciónf)
-    global QGral, QPrio, PS, SigFinServicio, caso, SigFinZona, ZS
+    global QGral, QPrio, PS, SigFinServicio, caso, SigFinZona, ZS, tZS
     
     if caso == 1 or 2:
         if QGral >= 1:
@@ -174,10 +175,11 @@ def FinServicio():
                 SigFinServicio = horaFinal 
     elif caso == 5:
             PS = 0
-            SigFinZona = horaActual + tZS
-            ZS = 1
-            SigFinServicio = horaFinal 
             QGral = QGral - 1
+            ZS = 1
+            SigFinZona = horaActual +  dt.timedelta(minutes=tZS)
+            SigFinServicio = horaFinal 
+           
         
 def SalidaServidor():
     global S, SigLlegadaServ, SigFinServicio, SigSalidaServ
@@ -204,57 +206,41 @@ def AbandonoCliente():
         vAbandono[0] = horaFinal
     else:
         del vAbandono[0]
-
-def header1():
-    print("{:<13}{:<24}{:<21}{:<3}{:<4}".format("Hora actual", "H.Prox llegada cliente", "H.Prox fin servicio", "QGral", "PS"))
-
-def header2():
-    print("{:<13}{:<24}{:<21}{:<24}{:<25}{:<3}{:<3}{:<4}".format("Hora actual", "H.Prox llegada cliente", "H.Prox fin servicio", "H.Prox Salida servidor", "H.Prox Llegada servidor", "QGral", "PS", "S"))
-
-def header3():
-    print("{:<13}{:<24}{:<21}{:<18}{:<3}{:<4}".format("Hora actual", "H.Prox llegada cliente", "H.Prox fin servicio", "H. Prox Abandono", "QGral", "PS"))
-
-def header4():
-    print("{:<13}{:<24}{:<21}{:<24}{:<25}{:<18}{:<3}{:<3}{:<4}".format("Hora actual", "H.Prox llegada cliente", "H.Prox fin servicio", "H.Prox Salida servidor", "H.Prox Llegada servidor", "H. Prox Abandono", "QGral", "PS", "S"))
+    
 
 def Simulacion():
     global horaActual, PS, T, QGral, QPrio, SigFinServicio, SigFinZona, SigLlegadaGral, SigLlegadaPrio, SigLlegadaServ, SigSalidaServ, S
     
     print("-------------- Inicio de Simulación --------------")
-    # if(header==1):
-    #     header1()
-    # elif(header==2):
-    #     header2()
-    # elif(header==3):
-    #     header3()
-    # elif(header==4):
-    #     header4()
+  
     print("---------------------------------------------------------------")
-    LlegadaCliente()
+    LlegadaCliente("Gral")
 
     if caso == 1:
+        print("{:<13}{:<24}{:<21}{:<6}{:<4}".format("Hora actual", "H.Prox llegada cliente", "H.Prox fin servicio", "QGral", "PS"))
         while True:
             horaActual = min(SigFinServicio, SigLlegadaGral)
             if min(SigFinServicio, SigLlegadaGral) == SigFinServicio:
                 FinServicio()
             elif min(SigFinServicio, SigLlegadaGral) == SigLlegadaGral:
-                LlegadaCliente()
+                LlegadaCliente("Gral")
             elif SigFinServicio == SigLlegadaGral:
                 print ("Error")
                 break
             #"Hora actual", "H.Prox llegada cliente", "H.Prox fin servicio", "QGral", "PS"
-            print("{:>2}{:<1}{:<10}{:>2}{:<1}{:<21}{:>2}{:<1}{:<18}{:<3}{:<4}".format(horaActual.hour,":",horaActual.minute, SigLlegadaGral.hour,":", SigLlegadaGral.minute, SigFinServicio.hour,":", SigFinServicio.minute, QGral, PS, S)) 
+            print("{:>2}{:<1}{:<10}{:>2}{:<1}{:<21}{:>2}{:<1}{:<18}{:<6}{:<4}".format(horaActual.hour,":",horaActual.minute, SigLlegadaGral.hour,":", SigLlegadaGral.minute, SigFinServicio.hour,":", SigFinServicio.minute, QGral, PS)) 
             if horaActual >= horaFinal:
                 print("-------------- Fin de la simulación -------------- ") 
                 break
     elif caso == 2:
         LlegadaServidor()
+        print("{:<13}{:<24}{:<21}{:<24}{:<25}{:<6}{:<3}{:<4}".format("Hora actual", "H.Prox llegada cliente", "H.Prox fin servicio", "H.Prox Salida servidor", "H.Prox Llegada servidor", "QGral", "PS", "S"))
         while True:
             horaActual = min(SigFinServicio, SigLlegadaGral, SigLlegadaServ, SigSalidaServ)
             if min(SigFinServicio, SigLlegadaGral, SigLlegadaServ, SigSalidaServ) == SigFinServicio:
                 FinServicio()
             elif min(SigFinServicio, SigLlegadaGral, SigLlegadaServ, SigSalidaServ) == SigLlegadaGral:
-                LlegadaCliente()
+                LlegadaCliente("Gral")
             elif min(SigFinServicio, SigLlegadaGral, SigLlegadaServ, SigSalidaServ) == SigLlegadaServ:
                 LlegadaServidor()
             elif min(SigFinServicio, SigLlegadaGral, SigLlegadaServ, SigSalidaServ) == SigSalidaServ:
@@ -263,28 +249,31 @@ def Simulacion():
                 print ("Error")
                 break
             #"Hora actual", "H.Prox llegada cliente", "H.Prox fin servicio", "H.Prox Salida servidor", "H.Prox Llegada servidor", "QGral", "PS", "S"
-            print("{:>2}{:<1}{:<10}{:>2}{:<1}{:<21}{:>2}{:<1}{:<18}{:>2}{:<1}{:<21}{:>2}{:<1}{:<22}{:<3}{:<3}{:<4}".format(horaActual.hour,":", horaActual.minute, SigLlegadaGral.hour,":", SigLlegadaGral.minute, SigFinServicio.hour,":", SigFinServicio.minute, SigSalidaServ.hour,":", SigSalidaServ.minute,  SigLlegadaServ.hour,":", SigLlegadaServ.minute, QGral, PS, S)) 
+            print("{:>2}{:<1}{:<10}{:>2}{:<1}{:<21}{:>2}{:<1}{:<18}{:>2}{:<1}{:<21}{:>2}{:<1}{:<22}{:<6}{:<3}{:<4}".format(horaActual.hour,":", horaActual.minute, SigLlegadaGral.hour,":", SigLlegadaGral.minute, SigFinServicio.hour,":", SigFinServicio.minute, SigSalidaServ.hour,":", SigSalidaServ.minute,  SigLlegadaServ.hour,":", SigLlegadaServ.minute, QGral, PS, S)) 
             if horaActual >= horaFinal:
                 print("-------------- Fin de la simulación -------------- ") 
                 break
     elif caso == 3:
+        print("{:<13}{:<24}{:<21}{:<18}{:<6}{:<4}".format("Hora actual", "H.Prox llegada cliente", "H.Prox fin servicio", "H. Prox Abandono", "QGral", "PS"))
         while True:
             horaActual = min(SigFinServicio, SigLlegadaGral, vAbandono[0])
             if min(SigFinServicio, SigLlegadaGral, vAbandono[0]) == SigFinServicio:
                 FinServicio()
             elif min(SigFinServicio, SigLlegadaGral, vAbandono[0]) == SigLlegadaGral:
-                LlegadaCliente()
+                LlegadaCliente("Gral")
             elif min(SigFinServicio, SigLlegadaGral, vAbandono[0]) == vAbandono[0]:
                 AbandonoCliente()
             elif SigFinServicio == SigLlegadaGral == vAbandono[0]:
                 print ("Error")
                 break
             #"Hora actual", "H.Prox llegada cliente", "H.Prox fin servicio", "H. Prox Abandono", "QGral", "PS"
-            print("{:>2}{:<1}{:<10}{:>2}{:<1}{:<21}{:>2}{:<1}{:<18}{:>2}{:<1}{:<15}{:<3}{:<4}".format(horaActual.hour,":", horaActual.minute, SigLlegadaGral.hour,":", SigLlegadaGral.minute, SigFinServicio.hour,":", SigFinServicio.minute, vAbandono[0].hour,":", vAbandono[0].minute, QGral, PS)) 
+            print("{:>2}{:<1}{:<10}{:>2}{:<1}{:<21}{:>2}{:<1}{:<18}{:>2}{:<1}{:<15}{:<6}{:<4}".format(horaActual.hour,":", horaActual.minute, SigLlegadaGral.hour,":", SigLlegadaGral.minute, SigFinServicio.hour,":", SigFinServicio.minute, vAbandono[0].hour,":", vAbandono[0].minute, QGral, PS)) 
             if horaActual >= horaFinal:
                 print("-------------- Fin de la simulación -------------- ") 
                 break
     elif caso == 4:
+        LlegadaCliente("Prio")
+        print("{:<13}{:<24}{:<21}{:<34}{:<6}{:<6}{:<4}".format("Hora actual", "H.Prox llegada cliente", "H.Prox fin servicio", "H.Prox llegada cliente prioridad", "QGral", "QPrio", "PS"))
         while True:
             horaActual = min(SigFinServicio, SigLlegadaGral, SigLlegadaPrio)
             if min(SigFinServicio, SigLlegadaGral, SigLlegadaPrio) == SigFinServicio:
@@ -297,24 +286,25 @@ def Simulacion():
                 print ("Error")
                 break
             #"Hora actual", "H.Prox llegada cliente", "H.Prox fin servicio", "QGral", "PS"
-            print("{:>2}{:<1}{:<10}{:>2}{:<1}{:<21}{:>2}{:<1}{:<18}{:<3}{:<4}".format(horaActual.hour,":",horaActual.minute, SigLlegadaGral.hour,":", SigLlegadaGral.minute, SigFinServicio.hour,":", SigFinServicio.minute, QGral, PS, S)) 
+            print("{:>2}{:<1}{:<10}{:>2}{:<1}{:<21}{:>2}{:<1}{:<18}{:>2}{:<1}{:<31}{:<6}{:<6}{:<4}".format(horaActual.hour,":",horaActual.minute, SigLlegadaGral.hour,":", SigLlegadaGral.minute, SigFinServicio.hour,":", SigFinServicio.minute, SigLlegadaPrio.hour,":", SigLlegadaPrio.minute , QGral, QPrio, PS)) 
             if horaActual >= horaFinal:
                 print("-------------- Fin de la simulación -------------- ") 
                 break
     elif caso == 5:
+        print("{:<13}{:<24}{:<21}{:<23}{:<6}{:<3}{:<4}".format("Hora actual", "H.Prox llegada cliente", "H.Prox fin servicio", "H.Prox fin zona segura" ,"QGral", "ZS", "PS"))
         while True:
             horaActual = min(SigFinServicio, SigLlegadaGral, SigFinZona)
             if min(SigFinServicio, SigLlegadaGral, SigFinZona) == SigFinServicio:
                 FinServicio()
             elif min(SigFinServicio, SigLlegadaGral, SigFinZona) == SigLlegadaGral:
-                LlegadaCliente()
+                LlegadaCliente("Gral")
             elif min(SigFinServicio, SigLlegadaGral, SigFinZona) == SigFinZona:
                 FinZona()
             elif SigFinServicio == SigLlegadaGral:
                 print ("Error")
                 break
             #"Hora actual", "H.Prox llegada cliente", "H.Prox fin servicio", "QGral", "PS"
-            print("{:>2}{:<1}{:<10}{:>2}{:<1}{:<21}{:>2}{:<1}{:<18}{:<3}{:<4}".format(horaActual.hour,":",horaActual.minute, SigLlegadaGral.hour,":", SigLlegadaGral.minute, SigFinServicio.hour,":", SigFinServicio.minute, QGral, PS, S)) 
+            print("{:>2}{:<1}{:<10}{:>2}{:<1}{:<21}{:>2}{:<1}{:<18}{:>2}{:<1}{:<20}{:<6}{:<3}{:<4}".format(horaActual.hour,":",horaActual.minute, SigLlegadaGral.hour,":", SigLlegadaGral.minute, SigFinServicio.hour,":", SigFinServicio.minute, SigFinZona.hour, ":", SigFinZona.minute, QGral, ZS, PS)) 
             if horaActual >= horaFinal:
                 print("-------------- Fin de la simulación -------------- ") 
                 break
