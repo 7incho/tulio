@@ -93,7 +93,7 @@ def LlegadaCliente(case):
         SigLlegadaGral = horaActual + dt.timedelta(minutes=b)
     elif caso == 3:
         b=random.randint(tLlegadaGrali, tLlegadaGralf)
-        if PS == 0 and S == 1:
+        if PS == 0:
             PS = 1
             SigFinServicio = horaActual + dt.timedelta(minutes=a)
             vAbandono[0] = horaFinal
@@ -203,10 +203,9 @@ def AbandonoCliente():
     global QGral
     QGral = QGral-1
     if len(vAbandono) == 1:
-        vAbandono[0] = horaFinal
+        vAbandono[0] = horaFinal + dt.timedelta(hours=1)
     else:
         del vAbandono[0]
-    
 
 def Simulacion():
     global horaActual, PS, T, QGral, QPrio, SigFinServicio, SigFinZona, SigLlegadaGral, SigLlegadaPrio, SigLlegadaServ, SigSalidaServ, S
