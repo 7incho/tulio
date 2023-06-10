@@ -31,11 +31,13 @@ def VectorInicial():
     tAtenciónf = int(input("Máximo: "))
     
     if caso == 1:
+        #print("--------------------------------Caso 1--------------------------------")
         print("Ingrese el intervalo en el que llegan los clientes: ") 
         tLlegadaGrali = int(input("Mínimo: "))
         tLlegadaGralf = int(input("Máximo: "))
         S = 1
     elif caso == 2:
+        #print("--------------------------------Caso 2--------------------------------")
         print("Ingrese el intervalo en el que llegan los clientes: ") 
         tLlegadaGrali = int(input("Mínimo: "))
         tLlegadaGralf = int(input("Máximo: "))
@@ -47,6 +49,7 @@ def VectorInicial():
         tTrabajoi = int(input("Mínimo: "))
         tTrabajof = int(input("Máximo: "))
     elif caso == 3:
+        #print("--------------------------------Caso 3--------------------------------")
         print("Ingrese el intervalo en el que llegan los clientes: ") 
         tLlegadaGrali = int(input("Mínimo: "))
         tLlegadaGralf = int(input("Máximo: "))
@@ -55,6 +58,7 @@ def VectorInicial():
         tAbandonof = int(input("Máximo: "))
         S = 1
     elif caso == 4:
+        #print("--------------------------------Caso 4--------------------------------")
         print("Ingrese el intervalo en el que llegan los clientes SIN prioridad: ") 
         tLlegadaGrali = int(input("Mínimo: "))
         tLlegadaGralf = int(input("Máximo: "))
@@ -64,6 +68,7 @@ def VectorInicial():
         tLlegadaPriof = int(input("Máximo: "))
         S = 1
     elif caso == 5:
+        #print("--------------------------------Caso 5--------------------------------")
         print("Ingrese el intervalo en el que llegan los clientes: ") 
         tLlegadaGrali = int(input("Mínimo: "))
         tLlegadaGralf = int(input("Máximo: "))
@@ -76,6 +81,7 @@ def LlegadaCliente(case):
     global QGral, QPrio,  PS, horaActual, SigFinServicio, SigLlegadaGral, SigLlegadaPrio, caso, vAbandono, SigFinZona, ZS
     
     if caso == 1:
+        #print("--------------------------------Llegada Caso 1--------------------------------")
         b=random.randint(tLlegadaGrali, tLlegadaGralf)
         if PS == 0:
             PS = 1
@@ -84,6 +90,7 @@ def LlegadaCliente(case):
             QGral = QGral + 1
         SigLlegadaGral = horaActual + dt.timedelta(minutes=b)
     elif caso == 2:
+        #print("--------------------------------Llegada Caso 2--------------------------------")
         b=random.randint(tLlegadaGrali, tLlegadaGralf)
         if PS == 0 and S == 1:
             PS = 1
@@ -92,6 +99,7 @@ def LlegadaCliente(case):
             QGral = QGral + 1
         SigLlegadaGral = horaActual + dt.timedelta(minutes=b)
     elif caso == 3:
+        #print("--------------------------------Llegada Caso 3--------------------------------")
         b=random.randint(tLlegadaGrali, tLlegadaGralf)
         if PS == 0:
             PS = 1
@@ -106,6 +114,7 @@ def LlegadaCliente(case):
                 vAbandono.append(horaActual + dt.timedelta(minutes=c))
         SigLlegadaGral = horaActual + dt.timedelta(minutes=b)
     elif caso == 4:
+        #print("--------------------------------Llegada Caso 4--------------------------------")
         if case == "Gral":
             b=random.randint(tLlegadaGrali, tLlegadaGralf)
             if PS == 0:
@@ -123,6 +132,7 @@ def LlegadaCliente(case):
                 QPrio = QPrio + 1
             SigLlegadaPrio = horaActual + dt.timedelta(minutes=c)    
     elif caso == 5:
+        #print("--------------------------------Llegada Caso 5--------------------------------")
         b=random.randint(tLlegadaGrali, tLlegadaGralf)
         if PS == 0 and ZS == 0:
             ZS = 1
@@ -143,7 +153,8 @@ def FinServicio():
     a=random.randint(tAtencióni, tAtenciónf)
     global QGral, QPrio, PS, SigFinServicio, caso, SigFinZona, ZS, tZS
     
-    if caso == 1 or 2:
+    if caso == 1 or caso == 2:
+        #print("--------------------------------Fin serv Caso 1 y 2--------------------------------")
         if QGral >= 1:
             QGral = QGral - 1
             SigFinServicio = horaActual + dt.timedelta(minutes=a)
@@ -151,6 +162,7 @@ def FinServicio():
             PS = 0
             SigFinServicio = horaFinal 
     elif caso == 3:
+        #print("--------------------------------Fin serv Caso 3--------------------------------")
         if QGral >= 1:
             QGral = QGral - 1
             if len(vAbandono) == 1:
@@ -163,6 +175,7 @@ def FinServicio():
             SigFinServicio = horaFinal 
             vAbandono[0] = horaFinal
     elif caso == 4:
+        #print("--------------------------------Fin serv Caso 4--------------------------------")
         if QPrio >= 1:
             QPrio = QPrio - 1
             SigFinServicio = horaActual + dt.timedelta(minutes=a)
@@ -172,14 +185,14 @@ def FinServicio():
                 SigFinServicio = horaActual + dt.timedelta(minutes=a)
             else:
                 PS = 0
-                SigFinServicio = horaFinal 
+                SigFinServicio = horaFinal
     elif caso == 5:
-            PS = 0
-            QGral = QGral - 1
-            ZS = 1
-            SigFinZona = horaActual +  dt.timedelta(minutes=tZS)
-            SigFinServicio = horaFinal 
-           
+        #print("--------------------------------Fin serv Caso 5--------------------------------")
+        PS = 0
+        QGral = QGral - 1
+        ZS = 1
+        SigFinZona = horaActual +  dt.timedelta(minutes=tZS)
+        SigFinServicio = horaFinal 
         
 def SalidaServidor():
     global S, SigLlegadaServ, SigFinServicio, SigSalidaServ
@@ -212,7 +225,7 @@ def Simulacion():
     
     print("-------------- Inicio de Simulación --------------")
   
-    print("---------------------------------------------------------------")
+    print("--------------------------------------------------")
     LlegadaCliente("Gral")
 
     if caso == 1:
