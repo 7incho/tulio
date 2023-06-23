@@ -77,10 +77,6 @@ def VectorInicial():
         tZS= int(input("Ingrese el tiempo que demora el cliente en pasar por la zona de seguridad: "))
     elif caso ==6:
         #-----------Ajuste de vatriables-----------
-        QGral = 0
-        PS = 0
-        T = 190
-        horaFinal = horaActual + dt.timedelta(minutes=T)
         tAtencióni = 10
         tAtenciónf = 10
         tLlegadaGrali = 10
