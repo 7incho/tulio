@@ -85,6 +85,7 @@ def VectorInicial():
         tDescansof = 5
         tTrabajoi = 60
         tTrabajof = 60
+        horaFinal = horaActual + dt.timedelta(minutes=190)
         
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
         
