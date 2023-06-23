@@ -373,7 +373,7 @@ def Simulacion():
                 print ("Error")
                 break
             #"Hora actual", "H.Prox llegada cliente", "H.Prox fin servicio", "H.Prox Salida servidor", "H.Prox Llegada servidor", "QGral", "PS", "S"
-            print("{:>2}{:<1}{:<10}{:>2}{:<1}{:<21}{:>2}{:<1}{:<18}{:>2}{:<1}{:<21}{:>2}{:<1}{:<22}{:<6}{:<3}{:<4}".format(horaActual.hour,":", horaActual.minute, SigLlegadaGral.hour,":", SigLlegadaGral.minute, SigFinServicio.hour,":", SigFinServicio.minute, SigSalidaServ.hour,":", SigSalidaServ.minute,  SigLlegadaServ.hour,":", SigLlegadaServ.minute, QGral, PS, S)) 
+            print("{:>2}{:<1}{:<2}{:<1}{:<7}{:>2}{:<1}{:<2}{:<1}{:<18}{:>2}{:<1}{:<2}{:<1}{:<15}{:>2}{:<1}{:<2}{:<1}{:<18}{:>2}{:<1}{:<2}{:<1}{:<19}{:<6}{:<3}{:<4}".format(horaActual.hour,":", horaActual.minute,":", horaActual.second, SigLlegadaGral.hour,":", SigLlegadaGral.minute,":", SigLlegadaGral.second, SigFinServicio.hour,":", SigFinServicio.minute,":", SigFinServicio.second, SigSalidaServ.hour,":", SigSalidaServ.minute,":", SigSalidaServ.second, SigLlegadaServ.hour,":", SigLlegadaServ.minute,":", SigLlegadaServ.second, QGral, PS, S)) 
             if horaActual >= horaFinal:
                 print("-------------- Fin de la simulación -------------- ") 
                 print("Cantidad de piezas producidas: ", contador)
